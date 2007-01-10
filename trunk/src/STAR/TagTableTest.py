@@ -8,7 +8,7 @@ import STAR,unittest
 
 class AllChecks(TestCase):
     def testcheck_integrity(self):
-        """TagTable Checks"""
+        """TagTable"""
         STAR.verbosity = 2
     ##    text = """_A a _B "b'" """; free = 1
         text = """_A a b c d e"""; free = None

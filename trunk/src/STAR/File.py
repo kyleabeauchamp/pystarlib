@@ -3,7 +3,6 @@ Classes for dealing with STAR syntax
 """
 import zipfile
 import urllib
-from STAR.localConstants import TestDataDir
 from Text import *
 from Utils import *
 from SaveFrame import *
@@ -16,6 +15,9 @@ ___date__     = "$Date$"
 
 """
 $Log$
+Revision 1.3  2007/01/10 16:34:44  jurgenfd
+Reduced test verbosity.
+
 Revision 1.2  2007/01/10 16:21:35  jurgenfd
 Removed the test data dir by inlining the little that was there.
 Added settings as I use in Eclipse/PyDev but I am not sure if that's interesting to external users.

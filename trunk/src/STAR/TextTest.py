@@ -7,7 +7,7 @@ import unittest
 
 class AllChecks(TestCase):
     def test(self):
-        """STAR Text Checks"""
+        """Text"""
         textExpectedAfterCollapse = ';<eol-string>mmy xie<eol-string>;\n_Test'
         text = """;
 mmy xie
