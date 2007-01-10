@@ -8,8 +8,11 @@ ___date__     = "$Date$"
 
 """
 $Log$
-Revision 1.1  2007/01/09 22:10:15  jurgenfd
-Initial revision
+Revision 1.2  2007/01/10 23:21:28  jurgenfd
+Tried fixing the no comments preparsing but not happy yet.
+
+Revision 1.1.1.1  2007/01/09 22:10:15  jurgenfd
+initial import
 
 Revision 1.3  2007/01/09 17:49:30  jurgen
 Speeded parsing up by a factor of 5 by optimizing a bug fix from Wim.
@@ -161,18 +164,39 @@ pattern_nmrView_compress_empty = re.compile(r""" \{(\s+)\}
                                              """, re.MULTILINE | re.VERBOSE)
 pattern_nmrView_compress_questionmark = re.compile(r""" \{(\s+\?)\}
                                                     """, re.MULTILINE | re.VERBOSE)
-                   
-pattern_comment_middle = re.compile (r""" (^[^;^\n]
-                                          (?:([\'][^\']*\#[^\']*[\']|[\"][^\"]*\#[^\"]*[\"])|[^\#.])*? )  # Any string beginning a line other than with a semicolon and with no quotes in it
-                                          (\s+\#.*)?    $        # Any string ending a line and starting with a sharp
+# JFD old's
+pattern_comment_middle = re.compile (r"""(^[^;^\n] .*? )   # Any string beginning a line other than with a semicolon
+                                         (\s \#  .* $  )   # Any string ending a line and starting with a sharp
                                    """, re.MULTILINE | re.VERBOSE)
 
+# Wim's:                   
+pattern_comment_middle = re.compile (
+     r""" (                                             # start group 1 that will be captured for replay.
+             ^[^;^\n]                                   # not a what?
+             (?:                                        # start a non-capturing group
+                 (                                      # start group 2 (capturing?)
+                  [\'][^\']*\#[^\']*[\'] |              # get '<text>#<text>' 
+                  [\"][^\"]*\#[^\"]*[\"]                # get "<text>#<text>"
+                 ) |                
+                 [^\#.]                                 
+             )*? 
+           )  
+          # Any string beginning a line other than with a semicolon and with no quotes in it
+          (\s+\#.*)?    $                                                         # the comment to be deleted.
+          # Any string ending a line and starting with a sharp
+   """, re.MULTILINE | re.VERBOSE)
     # Hashes in quotes don't count!
     # (?:[\'\"][^\'^\".]*\#[^\'^\".]*[\'\"]|[^\#.])*? ) expression gets '<text>#<text>' blocks,
     # is now built into multiline search, seems to be working... (Wim 11/02)
-    #
     # Changed \s* to \s+ - comments can only start with a ' ' before the '#' (Wim 05/03)
     # Removed . from [^\'^\".] in regular expression described above: more generic (Wim 05/03)
+# TODO: catch"""H# # comment"""
+# TODO: catch"""
+#;
+#foo # comment
+#;"""
+    #Note that 1q56 has some huge line lengths that make things very slow here.
+
 
 """
 Searches for a regular expression in text.
@@ -482,14 +506,20 @@ def semicolons_add( text, possible_bad_char=None ):
 
 """
 Strip the STAR comments
-Timed at: 2.8 seconds for a 5 Mb file with 61 comments (comment begin=31/other=30)
-Pentium 3 @ 800 MHz only counting cpu seconds
 """
 def comments_strip( text ):
-#    verbosity = 9
+    # split for profiling
+    text = _comments_strip1(text)
+    text = _comments_strip2(text)
+    return text
+
+def _comments_strip1( text ):
     text, count = pattern_comment_begin.subn( '', text )
     if verbosity >= 9:
         print 'Done [%s] subs with comment at beginning of line' % count
+    return text
+
+def _comments_strip2( text ):
     text, count = pattern_comment_middle.subn( '\g<1>', text )
     if verbosity >= 9:
         print 'Done [%s] subs with comment not at beginning of line' % count

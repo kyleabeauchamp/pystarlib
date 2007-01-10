@@ -136,7 +136,8 @@ class TagTable (Lister):
                 tag_id = tag_id + col_count
                 if tag_id - count > count_hash:
                     count = tag_id
-                    print '##### %s looped tag values collected ######' % count_hash
+                    if verbosity >= 9:
+                        print '##### %s looped tag values collected ######' % count_hash
                                 
         if show_stop_tag:
             str_row.append( '\n' + loop_ident_size * ' ' + 'stop_\n' )
