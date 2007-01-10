@@ -60,18 +60,9 @@ save_
             outfile.write(zfobj.read(fname))
             outfile.close()
             strf = File()                
-            strf.filename  = fnameLocal
-                
-            def myfunc():
-                start = time.time()
-#                print "DEBUG: reading file:", strf.filename
-                if strf.read():
-                    print "ERROR: In read. Exiting program"
-                elapsed = time.time()-start
-#                print "took: %.3f seconds" % (elapsed)
-        
-        #    profile.run( 'myfunc()' )
-            myfunc()
-                                              
+            strf.filename  = fnameLocal   
+#            print "DEBUG: parsing file"
+            strf.read()   
+
 if __name__ == "__main__":
     unittest.main()

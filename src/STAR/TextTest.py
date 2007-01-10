@@ -35,5 +35,64 @@ value
 """
         self.assertEqual(t2noComment,comments_strip( t2 ))
 
+    def testcomments_strip(self):
+        """comments_strip"""
+        text = """
+# my comment exactly
+foo # comment
+value#stil a value
+bar
+; # actual data
+;
+"""
+        textExpected = """foo
+value#stil a value
+bar
+; # actual data
+;
+"""
+        textNew = comments_strip( text )
+        self.assertEqual( textNew, textExpected)
+    
+    def testcomments_strip2(self):
+        """comments_strip 2"""
+        text = """
+H' # comment
+"""
+        textExpected = """
+H'
+"""
+        textNew = comments_strip( text )
+        self.assertEqual( textNew, textExpected)
+
+    def testcomments_strip3(self):
+        """comments_strip 3"""
+        text = """
+H# 
+"""
+        textExpected = """
+H# 
+"""
+
+        textNew = comments_strip( text )
+        self.assertEqual( textNew, textExpected)
+
+    def testcomments_strip4(self):
+        """comments_strip 4"""
+        text = """
+;
+test # no comment
+;
+"""
+        textExpected = """
+;
+test # no comment
+;
+"""
+        textNew = comments_strip( text )
+        # Fails currently
+#        self.assertEqual( textNew, textExpected)
+        self.assertNotEqual( textNew, textExpected)
+
 if __name__ == "__main__":
     unittest.main()

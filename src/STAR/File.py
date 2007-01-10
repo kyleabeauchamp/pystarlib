@@ -15,6 +15,9 @@ ___date__     = "$Date$"
 
 """
 $Log$
+Revision 1.4  2007/01/10 23:21:28  jurgenfd
+Tried fixing the no comments preparsing but not happy yet.
+
 Revision 1.3  2007/01/10 16:34:44  jurgenfd
 Reduced test verbosity.
 
@@ -392,4 +395,40 @@ class File (Lister):
             if self.verbosity :
                 print "WARNING: Not pretty printing STAR file", self.filename
             return 1
+
+if __name__ == "__main__":
+    strf = File()    
+    def setup():
+        # Freely available on the web so not included in package.
+        entry = '1edp' # 57 kb
+#        entry = '1q56' # 10 Mb takes 95 s to parse on 2GHz PIV CPU
+#        entry = '1brv' # 1 Mb 
+#        entry = '1hue' # 6 Mb
+        urlLocation = "http://www.bmrb.wisc.edu/WebModule/MRGridServlet?block_text_type=3-converted-DOCR&file_detail=3-converted-DOCR&pdb_id=%s&program=STAR&request_type=archive&subtype=full&type=entry" % (entry)
+        fnamezip = entry+".zip"
+        print "DEBUG: downloading url:", urlLocation
+        urllib.urlretrieve(urlLocation,fnamezip)
+        print "DEBUG: opening local zip file:", fnamezip
+        zfobj = zipfile.ZipFile(fnamezip)
+        fname = None
+        for name in zfobj.namelist():    
+            if name.endswith('.str'):
+                fname = name            
+        fnameLocal = entry+".str"
+        print "DEBUG: materializing file", fname, "as local STAR file:", fnameLocal
+        outfile = open(fnameLocal, 'w')
+        outfile.write(zfobj.read(fname))
+        outfile.close()                
+        strf.filename  = fnameLocal   
+            
+    def read():
+        print "DEBUG: parsing file"
+        strf.read()
+    def write():
+        print "DEBUG: writing file"
+        strf.filename  = strf.filename + "_new.str"
+        strf.write()
         
+    setup()    
+    profile.run('read()')
+    write()
