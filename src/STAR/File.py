@@ -16,8 +16,12 @@ ___date__     = "$Date$"
 
 """
 $Log$
-Revision 1.1  2007/01/09 22:10:14  jurgenfd
-Initial revision
+Revision 1.2  2007/01/10 16:21:35  jurgenfd
+Removed the test data dir by inlining the little that was there.
+Added settings as I use in Eclipse/PyDev but I am not sure if that's interesting to external users.
+
+Revision 1.1.1.1  2007/01/09 22:10:14  jurgenfd
+initial import
 
 Revision 1.4  2007/01/09 21:57:53  jurgen
 Readied the package for release to sf.net by deleting larger resource.
@@ -137,6 +141,7 @@ class File (Lister):
          
         return 0
 
+    
     """
     - Parses text into save frames and tagtables.
     - Input text should start at position given with non-white space character

@@ -2,7 +2,6 @@
 """
 from localConstants import *
 import unittest,os
-import STAR
 from File import *
 from TagTable import *
 from SaveFrame import *
@@ -10,20 +9,40 @@ from unittest import TestCase
 
 
 class AllChecks(TestCase):
-        STAR.verbosity = 2
-        strf           = File(verbosity=STAR.verbosity)        
+        strf           = File(verbosity=2)        
         
         def testreadNWrite(self):
             """STAR File read check"""
-            self.strf.filename  = os.path.join(TestDataDir,'comment_none.str')
-            self.assertFalse(self.strf.read())                                    
+            text = """data_no_comments_here
+
+save_comment
+   _Saveframe_category  comment
+   loop_
+        _comment
+        _every_flag
+        _category
+
+;
+#######################
+#  BOGUS              #
+#######################
+
+;
+        N
+    BOGUS_CATEGORY
+
+     stop_
+save_
+"""
+            self.assertFalse(self.strf.parse(text=text))                                    
             self.strf.filename = self.strf.filename + '_new.str'
             self.assertFalse(self.strf.write())
 
         def testread2(self):
             """STAR File read2 check"""
             # Freely available on the web so not included in package.
-            entry = '1q56'
+            entry = '1edp'
+#            entry = '1q56'
             urlLocation = "http://www.bmrb.wisc.edu/WebModule/MRGridServlet?block_text_type=3-converted-DOCR&file_detail=3-converted-DOCR&pdb_id=%s&program=STAR&request_type=archive&subtype=full&type=entry" % (entry)
             fnamezip = entry+".zip"
             print "DEBUG: downloading url:", urlLocation

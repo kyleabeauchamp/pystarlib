@@ -11,4 +11,4 @@ if os.name == 'nt': # Windows drives
 StarCodeDir       = os.path.join(dir,'STAR','src','STAR')
 TestDataDir       = os.path.join(dir,'STAR','test_data')
 #print StarCodeDir
-print "Read STAR.localConstants.py version 0.2.0"
+print "Read STAR.localConstants.py version 0.2.2"
