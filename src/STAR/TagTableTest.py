@@ -1,9 +1,7 @@
-"""Unit test 
-"""
 from unittest import TestCase
 from TagTable import *
 from SaveFrame import *
-import STAR,unittest
+import unittest
 
 
 class AllChecks(TestCase):

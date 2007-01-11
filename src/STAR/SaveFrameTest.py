@@ -1,4 +1,5 @@
-"""Unit test for SaveFrameTest.py
+"""
+Unit test for SaveFrameTest.py
 Setup taken from "Dive Into Python"
 """
 from STAR.TagTable import TagTable

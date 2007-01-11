@@ -12,7 +12,6 @@ Jurgen Doreleijers modified Python nmrStar reader. Bug fixes and additions (nota
 
 Revision 1.1.1.1  2001/11/02 20:16:40  jurgen
 Initial package capable of read/write access to STAR files without nested loops
-
 """
 ## Standard modules
 import re

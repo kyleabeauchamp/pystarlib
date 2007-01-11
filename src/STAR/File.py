@@ -7,77 +7,11 @@ from Text import *
 from Utils import *
 from SaveFrame import *
 import os
-import profile, time
+#import profile
 
 __author__    = "$Author$" 
 ___revision__ = "$Revision$"
 ___date__     = "$Date$"
-
-"""
-$Log$
-Revision 1.4  2007/01/10 23:21:28  jurgenfd
-Tried fixing the no comments preparsing but not happy yet.
-
-Revision 1.3  2007/01/10 16:34:44  jurgenfd
-Reduced test verbosity.
-
-Revision 1.2  2007/01/10 16:21:35  jurgenfd
-Removed the test data dir by inlining the little that was there.
-Added settings as I use in Eclipse/PyDev but I am not sure if that's interesting to external users.
-
-Revision 1.1.1.1  2007/01/09 22:10:14  jurgenfd
-initial import
-
-Revision 1.4  2007/01/09 21:57:53  jurgen
-Readied the package for release to sf.net by deleting larger resource.
-The large example is now fetched from the web.
-
-Revision 1.3  2007/01/09 17:49:29  jurgen
-Speeded parsing up by a factor of 5 by optimizing a bug fix from Wim.
-Added more unit testing including a larger parse.
-
-Revision 1.2  2007/01/08 22:11:09  jurgen
-Patched some bugs.
-
-Revision 1.1  2007/01/08 20:49:43  jurgen
-Merged improvements from Wim Vranken (EBI) back in.
-
-Revision 1.7.4.1  2006/07/21 17:29:01  wimvranken
-Now only contain full path imports
-
-Revision 1.7  2005/11/03 14:06:39  wimvranken
-Replaced var text_lenght by text_length, added extra error message printout
-
-Revision 1.6  2005/06/27 16:43:41  wb104
-Updated licenses.
-
-Revision 1.5  2004/12/15 17:57:20  tjs23
-TJS: Updated licenses.
-
-Revision 1.4  2003/08/08 12:45:54  wfv20
-Changed preferred quote, added comment writing support
-
-Revision 1.3  2003/07/14 09:34:32  wfv20
-Modified so list references are not carried through class initialization
-
-Revision 1.2  2003/07/10 16:13:31  wfv20
-Changed to new universal setup
-
-Revision 1.1  2003/07/01 12:56:18  wfv20
-Jurgen Doreleijers modified Python nmrStar reader. Bug fixes and additions (notably for reading nmrView star files) have been made.
-
-Revision 1.1.1.1  2001/11/02 20:16:40  jurgen
-Initial package capable of read/write access to STAR files without nested loops
-
-"""
-
-if os.name != 'posix': 
-    tempdir     = None # The module tempfile will pick one
-else:
-    tempdir     = '/tmp'
-
-# No changes required after this line
-###############################################################################    
 
 """
 STAR file
@@ -133,14 +67,14 @@ class File (Lister):
     Reads a NMR-STAR formatted file using
     the filename attribute.
     """
-    def read (self, strip_comments=1, nmrView_type = 0):
+    def read (self, nmrView_type = 0):
 
         if not self.filename:
             print 'ERROR: no filename in STARFile with title:', self.title
             return 1
 #        print "DEBUG: Current directory", os.listdir(os.curdir)
         text = open(self.filename, 'r').read()
-        if self.parse(text=text, strip_comments=strip_comments, nmrView_type = nmrView_type):
+        if self.parse(text=text, nmrView_type = nmrView_type):
             print "ERROR: couldn't parse file"
             return 1
          
@@ -152,7 +86,7 @@ class File (Lister):
     - Input text should start at position given with non-white space character
     - Appends a list of datanodes(save frames or tagtables)
     """
-    def parse (self, text='', strip_comments=1, nmrView_type = 0):
+    def parse (self, text='', nmrView_type = 0):
 
         if self.verbosity > 2:        
             print 'DEBUG: Parsing STAR file:', self.filename
@@ -161,20 +95,14 @@ class File (Lister):
         '"Begin at the beginning," the King said, gravely,
         "and go on till you come to the end; then stop."' (LC)
         """
+        text = comments_strip(text)
 
         ## Collapse the semicolon block for ease of parsing
-        ## Very expensive to do
-        ## Timed at: xx seconds for a xx Mb file with xx semicolon blocks
         text = semicolon_block_collapse(text)
-
-        ## Now it's easy to strip comments
-        if strip_comments:
-            text = comments_strip(text)
         
         
         ## For nmrView 'nmrStar' also compress {  } into {}
-        ## Wim 05/03/2003
-        
+        ## Wim 05/03/2003        
         if nmrView_type:
             text = nmrView_compress(text) 
         
@@ -331,7 +259,9 @@ class File (Lister):
         if not self.filename:
             print 'ERROR: no filename in STARFile with title:', self.title
             return 1
-        open(self.filename, 'w').write(self.star_text())
+        f = open(self.filename, 'w')
+        f.write(self.star_text())
+        f.close()
         if self.verbosity > 2:
             print 'DEBUG: Written STAR file:', self.filename
 
@@ -395,40 +325,3 @@ class File (Lister):
             if self.verbosity :
                 print "WARNING: Not pretty printing STAR file", self.filename
             return 1
-
-if __name__ == "__main__":
-    strf = File()    
-    def setup():
-        # Freely available on the web so not included in package.
-        entry = '1edp' # 57 kb
-#        entry = '1q56' # 10 Mb takes 95 s to parse on 2GHz PIV CPU
-#        entry = '1brv' # 1 Mb 
-#        entry = '1hue' # 6 Mb
-        urlLocation = "http://www.bmrb.wisc.edu/WebModule/MRGridServlet?block_text_type=3-converted-DOCR&file_detail=3-converted-DOCR&pdb_id=%s&program=STAR&request_type=archive&subtype=full&type=entry" % (entry)
-        fnamezip = entry+".zip"
-        print "DEBUG: downloading url:", urlLocation
-        urllib.urlretrieve(urlLocation,fnamezip)
-        print "DEBUG: opening local zip file:", fnamezip
-        zfobj = zipfile.ZipFile(fnamezip)
-        fname = None
-        for name in zfobj.namelist():    
-            if name.endswith('.str'):
-                fname = name            
-        fnameLocal = entry+".str"
-        print "DEBUG: materializing file", fname, "as local STAR file:", fnameLocal
-        outfile = open(fnameLocal, 'w')
-        outfile.write(zfobj.read(fname))
-        outfile.close()                
-        strf.filename  = fnameLocal   
-            
-    def read():
-        print "DEBUG: parsing file"
-        strf.read()
-    def write():
-        print "DEBUG: writing file"
-        strf.filename  = strf.filename + "_new.str"
-        strf.write()
-        
-    setup()    
-    profile.run('read()')
-    write()
