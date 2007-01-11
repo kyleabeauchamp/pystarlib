@@ -6,61 +6,6 @@ __author__    = "$Author$"
 ___revision__ = "$Revision$"
 ___date__     = "$Date$"
 
-"""
-$Log$
-Revision 1.2  2007/01/10 23:21:28  jurgenfd
-Tried fixing the no comments preparsing but not happy yet.
-
-Revision 1.1.1.1  2007/01/09 22:10:15  jurgenfd
-initial import
-
-Revision 1.3  2007/01/09 17:49:30  jurgen
-Speeded parsing up by a factor of 5 by optimizing a bug fix from Wim.
-Added more unit testing including a larger parse.
-
-Revision 1.2  2007/01/08 22:11:10  jurgen
-Patched some bugs.
-
-Revision 1.1  2007/01/08 20:49:46  jurgen
-Merged improvements from Wim Vranken (EBI) back in.
-
-Revision 1.10.4.1  2006/05/23 16:41:41  wimvranken
-Bug fix by Jurgen Doreleijers (BMRB) in semicolons_add()
-
-Revision 1.10  2005/12/19 15:00:26  wimvranken
-Fixed other small bug in ; comment handling
-
-Revision 1.9  2005/12/15 18:19:34  wimvranken
-Removed some previous changes for ; handling
-
-Revision 1.8  2005/11/03 14:08:23  wimvranken
-Slightly better handling of ; text blocks
-
-Revision 1.7  2005/06/27 16:43:42  wb104
-Updated licenses.
-
-Revision 1.6  2004/12/15 17:57:20  tjs23
-TJS: Updated licenses.
-
-Revision 1.5  2004/06/29 11:40:57  wfv20
-Better handling of writing strings with # in them
-
-Revision 1.4  2003/10/29 11:10:12  wfv20
-Now handles quotation marks within quotation marks if not followed by white space
-
-Revision 1.3  2003/08/08 12:45:39  wfv20
-Changed preferred quote
-
-Revision 1.2  2003/07/24 15:28:33  wfv20
-Better handling of hashes in quotes
-
-Revision 1.1  2003/07/01 12:56:19  wfv20
-Jurgen Doreleijers modified Python nmrStar reader. Bug fixes and additions (notably for reading nmrView star files) have been made.
-
-Revision 1.1.1.1  2001/11/02 20:16:40  jurgen
-Initial package capable of read/write access to STAR files without nested loops
-
-"""
 ## Standard modules
 import string, re
 
@@ -85,7 +30,13 @@ verbosity           = 2
 ## this string prepended to each line.
 prepending_string   = '[raw] '
 
-
+FREE = 0
+SINGLE = 1
+DOUBLE = 2
+singleq = "'"
+doubleq = '"'
+sharp   = '#'
+space   = ' '
 ## Following string will be replacing the eol in a semicolon block where needed
 ## It may not contain any funny characters and shouldn't have underscores
 ## because it will make parsing slower. Parentheses, if used, should be of the
@@ -157,45 +108,44 @@ pattern_d_quote        = re.compile(r"""\"\s+""", re.MULTILINE )
 pattern_e_semicolon    = re.compile( eol_string + r"""\;\s*""", re.MULTILINE ) # Added \n for better parsing Wim 01/11/05
 
 # Set beginning of line BEFORE whitespace - Wim 06/03/2003
-pattern_comment_begin  = re.compile (r"""^\s*\#.*\n           # A string starting a line with a sharp
-                                   """, re.MULTILINE | re.VERBOSE)
+#pattern_comment_begin  = re.compile (r"""^\s*\#.*\n           # A string starting a line with a sharp
+#                                   """, re.MULTILINE | re.VERBOSE)
                    
 pattern_nmrView_compress_empty = re.compile(r""" \{(\s+)\}
                                              """, re.MULTILINE | re.VERBOSE)
 pattern_nmrView_compress_questionmark = re.compile(r""" \{(\s+\?)\}
                                                     """, re.MULTILINE | re.VERBOSE)
 # JFD old's
-pattern_comment_middle = re.compile (r"""(^[^;^\n] .*? )   # Any string beginning a line other than with a semicolon
-                                         (\s \#  .* $  )   # Any string ending a line and starting with a sharp
-                                   """, re.MULTILINE | re.VERBOSE)
+#pattern_comment_middle = re.compile (r"""(^[^;^\n] .*? )   # Any string beginning a line other than with a semicolon
+#                                         (\s \#  .* $  )   # Any string ending a line and starting with a sharp
+#                                   """, re.MULTILINE | re.VERBOSE)
 
 # Wim's:                   
-pattern_comment_middle = re.compile (
-     r""" (                                             # start group 1 that will be captured for replay.
-             ^[^;^\n]                                   # not a what?
-             (?:                                        # start a non-capturing group
-                 (                                      # start group 2 (capturing?)
-                  [\'][^\']*\#[^\']*[\'] |              # get '<text>#<text>' 
-                  [\"][^\"]*\#[^\"]*[\"]                # get "<text>#<text>"
-                 ) |                
-                 [^\#.]                                 
-             )*? 
-           )  
-          # Any string beginning a line other than with a semicolon and with no quotes in it
-          (\s+\#.*)?    $                                                         # the comment to be deleted.
-          # Any string ending a line and starting with a sharp
-   """, re.MULTILINE | re.VERBOSE)
-    # Hashes in quotes don't count!
-    # (?:[\'\"][^\'^\".]*\#[^\'^\".]*[\'\"]|[^\#.])*? ) expression gets '<text>#<text>' blocks,
-    # is now built into multiline search, seems to be working... (Wim 11/02)
-    # Changed \s* to \s+ - comments can only start with a ' ' before the '#' (Wim 05/03)
-    # Removed . from [^\'^\".] in regular expression described above: more generic (Wim 05/03)
-# TODO: catch"""H# # comment"""
-# TODO: catch"""
+#pattern_comment_middle = re.compile (
+#     r""" (                                             # start group 1 that will be captured for replay.
+#             ^[^;^\n]                                   # not a what?
+#             (?:                                        # start a non-capturing group
+#                 (                                      # start group 2 (capturing?)
+#                  [\'][^\']*\#[^\']*[\'] |              # get '<text>#<text>' 
+#                  [\"][^\"]*\#[^\"]*[\"]                # get "<text>#<text>"
+#                 ) |                
+#                 [^\#.]                                 
+#             )*? 
+#           )  
+#          # Any string beginning a line other than with a semicolon and with no quotes in it
+#          (\s+\#.*)?    $                                                         # the comment to be deleted.
+#          # Any string ending a line and starting with a sharp
+#   """, re.MULTILINE | re.VERBOSE)
+#    # Hashes in quotes don't count!
+#    # (?:[\'\"][^\'^\".]*\#[^\'^\".]*[\'\"]|[^\#.])*? ) expression gets '<text>#<text>' blocks,
+#    # is now built into multiline search, seems to be working... (Wim 11/02)
+#    # Changed \s* to \s+ - comments can only start with a ' ' before the '#' (Wim 05/03)
+#    # Removed . from [^\'^\".] in regular expression described above: more generic (Wim 05/03)
+# doesn't catch"""H# # comment""" see testcomments_strip3a
+# doesn't catch"""
 #;
 #foo # comment
 #;"""
-    #Note that 1q56 has some huge line lengths that make things very slow here.
 
 
 """
@@ -406,11 +356,6 @@ def semicolon_block_collapse( text ):
       except:
         print "ERROR in semicolon_block_collapse for text starting at: ["+ text[startpos:startpos+100]+ "]"            
         raise
-
-      # FOR TESTING
-      #print "@@@@"
-      #print text[startpos:endpos]
-      #print "@@@@"
     
       text_replace = re.sub("\n", eol_string,text[startpos:endpos])
 
@@ -505,25 +450,99 @@ def semicolons_add( text, possible_bad_char=None ):
     return "\n;" + text + ";\n"
 
 """
-Strip the STAR comments
+Strip the STAR comments new style
 """
 def comments_strip( text ):
-    # split for profiling
-    text = _comments_strip1(text)
-    text = _comments_strip2(text)
+    lines = string.split(text, "\n" )
+    i=0
+    count = 0
+    ls = len(lines)
+#    print "DEBUG: processing lines: ", ls
+    while i<ls:
+#        print "DEBUG: processing A line: ", i
+        line = lines[i]
+        # Scan past semi colon blocks.
+        l = len(line)
+        if l < 1:
+#            print "DEBUG: skipping empty line: "
+            i += 1
+            continue
+        if line[0] == ';':                        # start a semicolon block
+#            print "DEBUG: found start of semi colon block."
+            i += 1
+            line = lines[i]
+#            print "DEBUG: processing B line: ", i
+            while len(line)==0 or line[0] != ';':
+                i += 1
+                line = lines[i]
+#                print "DEBUG: processing C line: ", i
+                                                    # end a semicolon block
+        else:
+            line = _comments_strip_line(line)
+            if len(line) != l:
+                lines[i] = line
+#                print "Changed from lenght",l,"to line: ["+line+"] at:", i
+                count += 1
+        i += 1
+
+    if STAR.verbosity >= 9:
+        print 'Done [%s] comment subs' % count
+    text = string.join(lines,"\n")
     return text
 
-def _comments_strip1( text ):
-    text, count = pattern_comment_begin.subn( '', text )
-    if verbosity >= 9:
-        print 'Done [%s] subs with comment at beginning of line' % count
-    return text
+"""
+Strip the STAR comments for a single line.
+"""
+def _comments_strip_line( line ):
+    c=0
+    state = FREE # like to start out free which is possible after donning semicolon blocks.
+    l = len(line)
+    while c < l: # parse range [0,n> where n is length and exclusive.        
+        ch=line[c]
+#        print "DEBUG: Processing char '"+ch+"' at "+`c`+" in state:", state
+        if ( ch == sharp and state == FREE and    # A sharp in FREE state
+                (c==0 or line[c-1].isspace())):   # behind a space or at beginning of a line.
+#            print "DEBUG: Found sharpie"
+            if c==0:
+                return ''
+            return line[0:c] # this is fast.
+        if c==l-1: # c is the last character; leave it alone if it's not a sharpie
+            return line
+        
+        if ch == doubleq:
+            if (state == FREE and                # new " behind space or at beginning of line
+                (c==0 or line[c-1].isspace())):
+                state = DOUBLE
+            elif state == DOUBLE:
+                if line[c+1].isspace(): # garanteed to exist now.                
+                    state = FREE                
+        elif ch == singleq:
+            if (state == FREE and
+                    (c==0 or line[c-1].isspace())):
+                state = SINGLE
+            elif state == SINGLE:
+                if line[c+1].isspace():                    
+                    state = FREE           
+        c += 1
+    return line
 
-def _comments_strip2( text ):
-    text, count = pattern_comment_middle.subn( '\g<1>', text )
-    if verbosity >= 9:
-        print 'Done [%s] subs with comment not at beginning of line' % count
-    return text
+#def comments_stripOld( text ):
+#    # split for profiling
+#    text = _comments_strip1(text)
+#    text = _comments_strip2(text)
+#    return text
+#
+#def _comments_strip1( text ):
+#    text, count = pattern_comment_begin.subn( '', text )
+#    if verbosity >= 9:
+#        print 'Done [%s] subs with comment at beginning of line' % count
+#    return text
+#
+#def _comments_strip2( text ):
+#    text, count = pattern_comment_middle.subn( '\g<1>', text )
+#    if verbosity >= 9:
+#        print 'Done [%s] subs with comment not at beginning of line' % count
+#    return text
     
 def nmrView_compress( text ):
 

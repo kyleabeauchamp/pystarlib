@@ -13,6 +13,7 @@ NOTES:
 * Limitations to content:
     - STAR file should have one and only one data_ tag and that should
         be the first thing in the file
+    - Comments on input are ignored.
 * Limitations to the lay out (for fast parsing).
     - Save frames should start and end with save_ at the beginning of
         the line
@@ -33,8 +34,8 @@ SPEED ISSUES:
     significant increase in memory use.
 * This API uses native Python objects for a list of tags (looped or free)
     with user defined objects above that where speed and memory are less of an
-    issue. It parses a 10 Mb STAR file in 96 seconds with a peak memory
-    usage of 55 Mb. The average value in the file is 3 chars long. A Python
+    issue. It parses a 10 Mb STAR file in 25 seconds with a peak memory
+    usage of 45 Mb. The average value in the file is 3 chars long. A Python
     string object has a reference count (4), type pointer (4), malloc overhead
     (4), trailing \0 (1) and the content (rounded up to multiples of 4).
     Ignoring the content rounding we go from 3 bytes to 20 bytes (factor 7)
@@ -56,7 +57,7 @@ Language STAR file size (Mb) Time (s)  RAM (Mb) Notes
 C        10                   7.2      18       Using Steve's STARlib2.
 Java     10                  57        40       Tested by Steve 
 JavaNEW  10                   5.2     100       New parser based on SANSj: Wattos.Star.STARParser
-Python   10                  95        45       Written at BMRB
+Python   10                  25        45       Written at BMRB
 Python*  1*                  7200*     50*      Written at EMBL
 ###############################################################################
 Labeled with asterisk because the size of test file had to be truncated and was

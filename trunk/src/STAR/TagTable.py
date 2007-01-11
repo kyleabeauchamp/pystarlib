@@ -3,7 +3,7 @@ Classes for dealing with STAR syntax
 """
 from Text import *
 from Utils import *
-import re, types, sys, string
+import types
 
 __author__    = "$Author$"
 ___revision__ = "$Revision$"
@@ -53,18 +53,12 @@ class TagTable (Lister):
         if flavor == None or flavor == 'NMR-STAR':
             # Number of spaces before the loop_ tag. 0 in CIF
             loop_ident_size     = 3
-            free_ident_size     = loop_ident_size        
-            tagnames_ident_size = loop_ident_size + 3
-            show_stop_tag       = 1
         elif flavor == 'mmCIF':
             loop_ident_size     = 0
-            tagnames_ident_size = 0
-            show_stop_tag       = None
         else:
             print 'ERROR: Unknown flavor of STAR given', flavor
             return 1
                 
-        loop_ident_size         = 3
         free_ident_size         = loop_ident_size
         tagnames_ident_size     = loop_ident_size + 3
         show_stop_tag           = 1
