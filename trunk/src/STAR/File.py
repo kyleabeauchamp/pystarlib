@@ -1,8 +1,7 @@
 """
 Classes for dealing with STAR syntax
 """
-import zipfile
-import urllib
+from STAR import Utils
 from Text import *
 from Utils import *
 from SaveFrame import *
@@ -95,6 +94,10 @@ class File (Lister):
         '"Begin at the beginning," the King said, gravely,
         "and go on till you come to the end; then stop."' (LC)
         """
+#        print "DEBUG taking care of EOL variations"
+        text = Utils.dos2unix(text)# \r\n -> \n
+        text = Utils.mac2unix(text)# \r   -> \n
+
         text = comments_strip(text)
 
         ## Collapse the semicolon block for ease of parsing
