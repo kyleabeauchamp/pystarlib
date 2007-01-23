@@ -1,5 +1,8 @@
 """Unit test
 """
+from Wattos.Utils import PDBEntryLists
+import zipfile
+import urllib
 import unittest,os
 from File import *
 from TagTable import *
@@ -21,19 +24,38 @@ save_comment
         _every_flag
         _category
 
+'#It has very upfield-shifted H5', H5" @ 3.935,4.012 ppm'
 ;
 #######################
 #  BOGUS              #
 #######################
 
 ;
-        N
+        
     BOGUS_CATEGORY
 
      stop_
 save_
 """
             self.assertFalse(self.strf.parse(text=text))                                    
+            st = self.strf.star_text()
+#            print "unparsed text:[" +st+ "]"
+
+            exp = """data_no_comments_here
+save_comment   _Saveframe_category  comment   loop_
+        _comment
+        _every_flag
+        _category
+;#It has very upfield-shifted H5', H5" @ 3.935,4.012 ppm
+;
+;
+#######################
+#  BOGUS              #
+#######################
+
+;    BOGUS_CATEGORY     stop_ save_
+"""
+            self.assertTrue(Utils.equalIgnoringWhiteSpace(exp,st))
 
         def testread2(self):
             """STAR File read"""
@@ -46,7 +68,11 @@ def testEntry(entry):
     strf = File() 
     STAR.verbosity = 2
     # Freely available on the web so not included in package.
-    urlLocation = "http://www.bmrb.wisc.edu/WebModule/MRGridServlet?block_text_type=3-converted-DOCR&file_detail=3-converted-DOCR&pdb_id=%s&program=STAR&request_type=archive&subtype=full&type=entry" % (entry)
+    stage = "2-parsed"
+#    stage = "3-converted-DOCR"
+    urlLocation = ("http://www.bmrb.wisc.edu/WebModule/MRGridServlet?"+
+    "block_text_type=%s&file_detail=%s&pdb_id=%s"+
+    "&program=STAR&request_type=archive&subtype=full&type=entry") % (stage, stage, entry)
     fnamezip = entry+".zip"
 #    print "DEBUG: downloading url:", urlLocation
     urllib.urlretrieve(urlLocation,fnamezip)
@@ -70,26 +96,30 @@ def testEntry(entry):
     strf.filename  = strf.filename + "_new.str"
     strf.write()
 
-#    print "DEBUG: rewrite to Java formating for comparison"
-#    cmd = "java -Xmx256m Wattos.Star.STARFilter %s %s ." % ( strf.filename, entry+"_r.str")
-#    os.system(cmd)
-
-#    print "DEBUG: diffing"
-#    cmd = "diff -w %s %s > %s" % ( entry+".str", entry+"_r.str", entry+"_diff.txt")
-#    os.system(cmd)
+    # In order to make the tests below work you'll first need to install Wattos
+    #  which is why this test is not standard.
+    wattosInstalled = 0
+    if wattosInstalled:
+        print "DEBUG: rewrite to Java formating for comparison"
+        cmd = "java -Xmx256m Wattos.Star.STARFilter %s %s ." % ( strf.filename, entry+"_r.str")
+        os.system(cmd)
+    
+        print "DEBUG: diffing"
+        cmd = "diff -w %s %s > %s" % ( entry+".str", entry+"_r.str", entry+"_diff.txt")
+        os.system(cmd)
 
 #    print "DEBUG: cleaning up files"
     os.unlink(strf.filename)
     os.unlink(entry+".zip")
-    os.unlink(entry+".str")
+#    os.unlink(entry+".str")
 #    os.unlink(entry+"_r.str")
 #    os.unlink(entry+"_diff.str")
     
     
 def testAllEntries():
 #    from Wattos.Utils import PDBEntryLists    
-#    pdbList = PDBEntryLists.getBmrbNmrGridEntries()[:2]
-    pdbList = ( '1edp' )
+    pdbList = PDBEntryLists.getBmrbNmrGridEntries()[0:2] # Decide on the range yourself.
+#    pdbList = ( '1edp', )
     for entry in pdbList:
         print entry
         testEntry(entry)
@@ -97,7 +127,9 @@ def testAllEntries():
     #    entry = '1q56' # 10 Mb takes 27 s to parse on 2GHz PIV CPU
     #    entry = '1brv' # 1 Mb 
     #    entry = '1hue' # 6 Mb takes 26 s to parse on 2GHz PIV CPU
+    #    entry = '2ihx' # ? Mb has weird quoted values
+    
         
 if __name__ == "__main__":
     unittest.main()
-#    testAllEntries()
+#    testAllEntries() # Only do if you have Wattos installed or limit it's tests.

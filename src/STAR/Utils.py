@@ -1,6 +1,7 @@
 """
 Just a few utilities that can be of more general use.
 """
+import re
 
 __author__    = "$Author$"
 ___revision__ = "$Revision$"
@@ -8,8 +9,16 @@ ___date__     = "$Date$"
 
 """
 $Log$
-Revision 1.1  2007/01/09 22:10:15  jurgenfd
-Initial revision
+Revision 1.2  2007/01/23 18:08:11  jurgenfd
+The below quoted value wasn't parsed correctly.
+Occurs in the MR file for entry 2ihx.
+
+'#It has very upfield-shifted H5', H5" @ 3.935,4.012 ppm'
+
+Fixed with this update.
+
+Revision 1.1.1.1  2007/01/09 22:10:15  jurgenfd
+initial import
 
 Revision 1.1  2007/01/08 20:49:41  jurgen
 Merged improvements from Wim Vranken (EBI) back in.
@@ -55,3 +64,22 @@ def transpose ( matrix ):
     else:
         return apply( map, [None,] + list(matrix) )
 
+
+"""
+Collapses all whitespace to a single regular space
+before comparing. Doesn't remove final eol space.
+"""
+def equalIgnoringWhiteSpace( a, b):
+    pattern   = re.compile("\s+" )
+    a = re.sub(pattern, ' ',a)
+    b = re.sub(pattern, ' ',b)
+#    print "a["+a+"]"
+#    print "b["+b+"]"
+    return a == b
+
+def dos2unix(text):
+    return re.sub('\r\n', '\n',text)
+def unix2dos(text):
+    return re.sub('([^\r])(\n)', '\1\r\n',text)
+def mac2unix(text):
+    return re.sub('\r', '\n',text)
