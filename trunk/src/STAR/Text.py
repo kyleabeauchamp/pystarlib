@@ -77,7 +77,10 @@ pattern_tagtable_loop   = re.compile("loop_\s*" )
 pattern_tagtable_stop   = re.compile("stop_\s*" )
 # Same thing but not eating all white space chars, just a minimal match
 pattern_save_begin_nws      = re.compile('save_\S')
-pattern_save_end_nws        = re.compile('save_\s')
+# Pattern extended to include matches to "save_" as the last characters in a file.
+# in other words; without a end of line.
+pattern_save_end_nws        = re.compile('(?:save_\s)|(?:save_$)')
+#pattern_save_end_nws        = re.compile('save_\s')
 pattern_tagtable_loop_nws   = re.compile('loop_\s')
 pattern_tag_name_nws        = re.compile('_\S')
 # Same thing but requiring a prefixed white space char:

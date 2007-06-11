@@ -5,12 +5,14 @@ from STAR import Utils
 from Text import *
 from Utils import *
 from SaveFrame import *
-import os
+import os, re
 #import profile
 
 __author__    = "$Author$" 
 ___revision__ = "$Revision$"
 ___date__     = "$Date$"
+
+
 
 """
 STAR file
@@ -137,7 +139,7 @@ class File (Lister):
             if match_save_begin_nws:
                 if match_save_begin_nws.start() == pos:
                     next_sf_begin = 1
-            if not (next_sf_begin):
+            if not next_sf_begin:
                 match_save_end_nws = pattern_save_end_nws.search(text, pos, pos+len('save_ '))
                 if match_save_end_nws:
                     if match_save_end_nws.start() == pos:
@@ -159,8 +161,13 @@ class File (Lister):
                 print 'Items looked for are a begin or end of a saveframe, or'
                 print 'a begin of a tagtable(free or looped).'
                 print 
-                print "At text:"
-                print text[pos:pos+70]
+                print "At text (before pos=" , pos , "):"
+                start = pos-70
+                if start < 0:
+                    start = 0
+                print "[" + text[start:pos] + "]"
+                print "At text (starting pos=" , pos , "):"
+                print "[" + text[pos:pos+70]+ "]"
                 return None
             
             ## SAVE FRAME BEGIN
@@ -269,6 +276,45 @@ class File (Lister):
             print 'DEBUG: Written STAR file:', self.filename
 
     """
+    Reads only the top part of a file up to but excluding the line
+    on which any given regexp matches.
+    Returns None on success.
+    """
+    def getHeader( self, matchStrList, inputFN, outputFN ):
+        matchList = []
+        for str in matchStrList:
+            m = re.compile(str)
+            if m is None:
+                print "ERROR: failed to compile pattern: ", str
+                return 1
+#            print "Appended: ", str
+            matchList.append( m )
+        
+        input  = open(inputFN,  'r')
+        output = open(outputFN, 'w')
+        L =[]
+        line = input.readline()
+        found = False
+        while line:
+            for m in matchList:
+#                print "DEBUG: looking at line: ", line, " with ", m
+                if m.search(line) != None:
+                    found = True
+                    break
+            if found:
+                break
+            L.append(line)
+            line = input.readline()
+
+#        print "DEBUG: writing number of lines: ", len(L)
+        output.writelines(L)                    
+        output.close()
+        if not os.path.exists(outputFN):
+            print "WARNING: failed to materialize file: " + outputFN
+            return 1
+        return None
+
+    """
     Returns sfs that match the category, None for error and empty list
     for no matches.
     """
@@ -282,6 +328,8 @@ class File (Lister):
                     result.append(node)
         return result
 
+
+        
     """
     Tries to reformat a file on disk with the filename given in the
     attribute of this object.
