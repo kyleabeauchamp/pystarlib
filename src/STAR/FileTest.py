@@ -1,6 +1,6 @@
 """Unit test
 """
-from Wattos.Utils import PDBEntryLists
+    
 import zipfile
 import urllib
 import unittest,os
@@ -103,10 +103,11 @@ def testEntry(entry):
         print "DEBUG: rewrite to Java formating for comparison"
         cmd = "java -Xmx256m Wattos.Star.STARFilter %s %s ." % ( strf.filename, entry+"_r.str")
         os.system(cmd)
-    
-        print "DEBUG: diffing"
-        cmd = "diff -w %s %s > %s" % ( entry+".str", entry+"_r.str", entry+"_diff.txt")
-        os.system(cmd)
+        diffInstalled = 0
+        if diffInstalled:
+            print "DEBUG: diffing"
+            cmd = "diff -w %s %s > %s" % ( entry+".str", entry+"_r.str", entry+"_diff.txt")
+            os.system(cmd)
 
 #    print "DEBUG: cleaning up files"
     os.unlink(strf.filename)
@@ -117,9 +118,14 @@ def testEntry(entry):
     
     
 def testAllEntries():
-#    from Wattos.Utils import PDBEntryLists    
-    pdbList = PDBEntryLists.getBmrbNmrGridEntries()[0:2] # Decide on the range yourself.
-#    pdbList = ( '1edp', )
+    pdbList = ('1edp', '1q56', '1brv', '2hgh')
+    try:
+        from Wattos.Utils import PDBEntryLists
+        print "Imported Wattos.Utils; but it's not essential"
+        pdbList = PDBEntryLists.getBmrbNmrGridEntries()[0:4] # Decide on the range yourself.
+    except:
+        print "Skipping import of Wattos.Utils; it's not needed"
+    
     for entry in pdbList:
         print entry
         testEntry(entry)
@@ -129,7 +135,21 @@ def testAllEntries():
     #    entry = '1hue' # 6 Mb takes 26 s to parse on 2GHz PIV CPU
     #    entry = '2ihx' # ? Mb has weird quoted values
     
+"""
+Extra Test Routine going over some entries in the NMR Restraints Grid
+"""
+def testSingleFile( filename ):
+    strf = File() 
+    strf.filename  = filename   
+    print "DEBUG: reading file ", strf.filename
+    strf.read()
+    strf.filename  = strf.filename + "_new.str"
+    print "DEBUG: writing file ", strf.filename
+    strf.write()
+    
         
 if __name__ == "__main__":
+    testAllEntries()
+#    testSingleFile("S:\\jurgen\\2hgh_small_new_google.str")
     unittest.main()
-#    testAllEntries() # Only do if you have Wattos installed or limit it's tests.
+    print "Done with STAR.FileTest"
