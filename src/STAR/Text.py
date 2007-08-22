@@ -43,13 +43,14 @@ space   = ' '
 ## square type.
 eol_string = '<eol-string>'
 eol_string_length = len(eol_string)
-
-pattern_tagtable_loop = re.compile(r"""
-^\s*  loop_  \s*                                  # Begin of loop
-(   ^\s*     (?P<tagname>_\S+) \s*\n  )+          # Tag names with some spaces
-       (?P<rawtext>.+?)                           # Tag table raw text
-^\s*  stop_  \s*\n                                # End of loop
-     """, re.DOTALL | re.MULTILINE | re.VERBOSE )
+# Redefined below curiously found this bug with code analysis from pydev extensions
+# changing the wild import to specific import; that sounds like bad python if it matters.
+#pattern_tagtable_loop = re.compile(r"""
+#^\s*  loop_  \s*                                  # Begin of loop
+#(   ^\s*     (?P<tagname>_\S+) \s*\n  )+          # Tag names with some spaces
+#       (?P<rawtext>.+?)                           # Tag table raw text
+#^\s*  stop_  \s*\n                                # End of loop
+#     """, re.DOTALL | re.MULTILINE | re.VERBOSE )
 
 pattern_semicolon_block = re.compile(r"""
     ^;                                          # semicolon at begin, any text and then eol
@@ -68,6 +69,8 @@ pattern_quotes_needed  = re.compile( r'[\s\'\"]|^_|^\#' )
 pattern_quotes_needed_2= re.compile( r'[\s\'\"]|^_|,_|,\#' ) 
 
 pattern_eoline_etcet   = re.compile( r'[\n\r\v\f]' )
+# If the quote character is at the end of the word then it is falsely considered to need a 
+# different quote style; this happens frequently for e.g. H1' and all nucleic acid sugar atoms.
 pattern_single_qoute   = re.compile( r"'" )
 pattern_double_qoute   = re.compile( r'"' )
 
@@ -450,7 +453,7 @@ def semicolons_add( text, possible_bad_char=None ):
 #JFD updates 5/23/2006; apparently the text does not always end with an eol.
     if not text.endswith('\n'):
        text = text + '\n'
-    return "\n;" + text + ";\n"
+    return "\n;\n" + text + ";\n"
 
 """
 Strip the STAR comments new style

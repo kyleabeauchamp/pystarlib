@@ -2,10 +2,21 @@
 Classes for dealing with STAR syntax
 """
 from STAR import Utils
-from Text import *
-from Utils import *
-from SaveFrame import *
-import os, re
+from STAR.Utils import Lister
+from STAR.TagTable import TagTable
+from STAR.Text import comments_strip
+from STAR.Text import semicolon_block_collapse
+from STAR.Text import nmrView_compress
+from STAR.Text import pattern_save_begin
+from STAR.Text import pattern_save_end
+from STAR.Text import pattern_tagtable_loop
+from STAR.Text import pattern_save_begin_nws
+from STAR.Text import pattern_save_end_nws
+from STAR.Text import pattern_tag_name_nws
+from STAR.Text import pattern_tagtable_loop_nws
+from STAR.SaveFrame import SaveFrame
+import os
+import re
 #import profile
 
 __author__    = "$Author$" 
@@ -237,7 +248,7 @@ class File (Lister):
                     TagTable(free      = free, 
                                 tagnames  = [], 
                                 tagvalues = [], 
-                                verbosity = verbosity))
+                                verbosity = self.verbosity))
             tt = dn[-1] # Just to be verbose for the beloved reader
             pos = tt.parse(text=text, pos=pos)
             

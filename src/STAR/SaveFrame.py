@@ -1,23 +1,8 @@
 """
 Classes for dealing with STAR syntax
 """
+from STAR.Utils import Lister
 
-__author__    = "$Author$"
-___revision__ = "$Revision$"
-___date__     = "$Date$"
-
-"""
-Revision 1.1  2003/07/01 12:56:18  wfv20
-Jurgen Doreleijers modified Python nmrStar reader. Bug fixes and additions (notably for reading nmrView star files) have been made.
-
-Revision 1.1.1.1  2001/11/02 20:16:40  jurgen
-Initial package capable of read/write access to STAR files without nested loops
-"""
-## Standard modules
-import re
-## BMRB modules
-from TagTable       import *
-from Utils          import *
 
 """
 Saveframe class

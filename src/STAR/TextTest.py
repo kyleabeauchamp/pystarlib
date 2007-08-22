@@ -1,5 +1,5 @@
-from STAR.Text import *
 from unittest import TestCase
+from STAR.Text import comments_strip
 import unittest
 
 
