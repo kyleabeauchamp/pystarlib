@@ -1,6 +1,8 @@
 from unittest import TestCase
-from TagTable import *
-from SaveFrame import *
+from STAR.TagTable import TagTable
+import STAR
+#from TagTable import *
+#from SaveFrame import *
 import unittest
 
 
@@ -30,13 +32,15 @@ class AllChecks(TestCase):
 
 A
 
-;B
+;
+B
 C
 ;
  
 "H1'" 
 
-;H1'H2"
+;
+H1'H2"
 ;
  
 e
@@ -45,6 +49,8 @@ e
 
    stop_
 """        
+#        print exp
+#        print tt.star_text()
         self.assertEqual(exp,tt.star_text())
     
 

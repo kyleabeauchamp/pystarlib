@@ -1,15 +1,24 @@
 """
 Classes for dealing with STAR syntax
 """
-from Text import *
-from Utils import *
+from STAR.Text import pattern_quotes_needed
+from STAR.Text import quotes_add
+from STAR.Text import pattern_quotes_needed_2
+from STAR.Text import pattern_quoted
+from STAR.Text import tag_value_quoted_parse
+from STAR.Text import pattern_tags_loop
+from STAR.Text import pattern_tags_loop_2
+from STAR.Text import pattern_tagname_2
+from STAR.Text import pattern_tagtable_stop_2
+from STAR.Text import pattern_tagtable_loop_2
+from STAR.Text import pattern_unquoted_find
+from STAR.Text import pattern_tag_name
+from STAR.Text import tag_value_parse
+from STAR.Utils import Lister
+from STAR.Utils import transpose
+import string
 import types
-
-__author__    = "$Author$"
-___revision__ = "$Revision$"
-___date__     = "$Date$"
- 
-
+import re
 
 
 """
@@ -130,7 +139,7 @@ class TagTable (Lister):
                 tag_id = tag_id + col_count
                 if tag_id - count > count_hash:
                     count = tag_id
-                    if verbosity >= 9:
+                    if self.verbosity >= 9:
                         print '##### %s looped tag values collected ######' % count_hash
                                 
         if show_stop_tag:
