@@ -66,6 +66,7 @@ save_comment   _Saveframe_category  comment   loop_
 Extra Test Routine going over some entries in the NMR Restraints Grid
 """
 def testEntry(entry):
+    print "Testing Entry"
     strf = File() 
     STAR.verbosity = 2
     # Freely available on the web so not included in package.
@@ -158,7 +159,7 @@ def testAllEntries():
     #    entry = '1brv' # 1 Mb 
     #    entry = '1hue' # 6 Mb takes 26 s to parse on 2GHz PIV CPU
     #    entry = '2ihx' # ? Mb has weird quoted values
-    
+     
 """
 Extra Test Routine going over some entries in the NMR Restraints Grid
 """
