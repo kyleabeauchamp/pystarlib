@@ -145,7 +145,7 @@ def testAllEntries():
 #    pdbList = ('1edp', '1q56', '1brv', '2hgh')
     pdbList = ('1edp')
     try:
-        from Wattos.Utils import PDBEntryLists
+        from Wattos.Utils import PDBEntryLists #@UnresolvedImport
         print "Imported Wattos.Utils; but it's not essential"
         pdbList = PDBEntryLists.getBmrbNmrGridEntries()[0:1] # Decide on the range yourself.
     except:
