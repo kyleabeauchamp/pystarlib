@@ -172,9 +172,9 @@ def testSingleFile( filename ):
     print "DEBUG: writing file ", strf.filename
     strf.write()
     
-        
+    # a non-conflicting in the trunk.        
 if __name__ == "__main__":
     testAllEntries()
 #    testSingleFile("S:\\jurgen\\2hgh_small_new_google.str")
 #    unittest.main()
-    print "Done with STAR.FileTest"
+    print "Done with STAR.FileTest" # a conflicting change in trunk.
