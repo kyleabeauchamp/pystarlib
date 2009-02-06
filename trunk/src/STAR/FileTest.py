@@ -174,7 +174,7 @@ def testSingleFile( filename ):
     
         
 if __name__ == "__main__":
-    testAllEntries()
+    testAllEntries() # A line change in branch001 that does not conflict
 #    testSingleFile("S:\\jurgen\\2hgh_small_new_google.str")
 #    unittest.main()
-    print "Done with STAR.FileTest"
+    print "Done with STAR.FileTest" # A line change in branch001 that does conflict
