@@ -414,7 +414,7 @@ class TagTable (Lister):
                     if (c == "'" or c == '"') and bc != " ":
                         # JFD the next line takes an expensive slice of the pie?
 #                        tempendpos = idxstart + string.find(text[idxstart:],' ')                      
-                        tempendpos = string.find(text,' ',idxstart)
+                        tempendpos = string.find(text, ' ', idxstart)
                     else:                    
                         tempendpos = idxstart
 
@@ -459,8 +459,8 @@ class TagTable (Lister):
                   % ( col_length, tag_id )
             print "Tag names of this table are:"
             print self.tagnames            
-            for xVar in range(0,len(self.tagvalues[0])):             
-                for yVar in range(0,len(self.tagvalues)):
+            for xVar in range(0, len(self.tagvalues[0])):             
+                for yVar in range(0, len(self.tagvalues)):
                     print self.tagvalues[yVar][xVar],              
                 print '\n-----------------------------------------------'              
             pos = 0

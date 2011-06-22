@@ -65,7 +65,7 @@ save_comment   _Saveframe_category  comment   loop_
 
 ;    BOGUS_CATEGORY     stop_ save_
 """
-            self.assertTrue(Utils.equalIgnoringWhiteSpace(exp,st))
+            self.assertTrue(Utils.equalIgnoringWhiteSpace(exp, st))
 
         def testread2(self):
             """STAR File read"""
