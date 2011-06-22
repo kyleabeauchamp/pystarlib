@@ -81,7 +81,7 @@ J. Westbrook and P. E. Bourne. STAR/mmCIF: An ontologoy for macromolecular struc
 
 ## Public attributes
 verbosity               = 2
-starDirTmp             = os.path.join("/tmp" , "star")
+starDirTmp             = os.path.join("/tmp", "star")
 
 
 # The TMPDIR environment variable will override the default above but not the one that
@@ -90,7 +90,7 @@ try:
     from localConstants import starDirTmp #@UnresolvedImport
 except:
     if os.environ.has_key("TMPDIR"):
-        starDirTmp = os.path.join(os.environ["TMPDIR"] , "star")
+        starDirTmp = os.path.join(os.environ["TMPDIR"], "star")
 # end if
 
 if not os.path.exists(starDirTmp):
