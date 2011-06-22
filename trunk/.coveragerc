@@ -1,0 +1,8 @@
+[run]
+source=STAR
+
+#[report]
+#include=STAR
+
+#[xml]
+#output=coverage.xml
