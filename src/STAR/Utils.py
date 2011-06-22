@@ -1,7 +1,9 @@
 """
 Just a few utilities that can be of more general use.
 """
+import os
 import re
+import shutil
 
 __author__    = "$Author$"
 ___revision__ = "$Revision$"
@@ -83,3 +85,30 @@ def unix2dos(text):
     return re.sub('([^\r])(\n)', '\1\r\n',text)
 def mac2unix(text):
     return re.sub('\r', '\n',text)
+
+# Stolen from macostools
+EEXIST  =   17  #File exists
+def mkdirs(dst):
+    """Make directories leading to 'dst' if they don't exist yet"""
+    if dst == '' or os.path.exists(dst):
+        return
+    head, _tail = os.path.split(dst)
+    if os.sep == ':' and not ':' in head:
+        head = head + ':'
+    mkdirs(head)
+
+    try:
+        os.mkdir(dst, 0777)
+    except OSError, e:
+        # be happy if someone already created the path
+        if e.errno != EEXIST:
+            raise
+        # end if
+    # end try
+# end def
+
+# DELETE AN ENTIRE DIRECTORY INCLUDING ALL THE FILES
+# ==================================================
+def rmdir(path):
+    if (os.path.exists(path)): 
+        shutil.rmtree(path,1)

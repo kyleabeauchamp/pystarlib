@@ -16,6 +16,8 @@ class AllChecks(TestCase):
                         tagnames  = [],
                         tagvalues = [],
                         verbosity = STAR.verbosity)
+        print "DEBUG: Subclass of Lister is represented by: %r" % tt
+        
         pos = tt.parse( text = text, pos = 0)
         self.assertEqual(pos,len(text))
         

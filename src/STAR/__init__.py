@@ -1,3 +1,5 @@
+import os
+import sys
 __author__    = "$Author$"
 ___revision__ = "$Revision$"
 ___date__     = "$Date$"
@@ -78,3 +80,21 @@ J. Westbrook and P. E. Bourne. STAR/mmCIF: An ontologoy for macromolecular struc
 
 ## Public attributes
 verbosity               = 2
+starDirTmp             = os.path.join("/tmp" , "star")
+
+
+# The TMPDIR environment variable will override the default above but not the one that
+# might be defined in localConstants.py.
+try:
+    from localConstants import starDirTmp #@UnresolvedImport
+except:
+    if os.environ.has_key("TMPDIR"):
+        starDirTmp = os.path.join(os.environ["TMPDIR"] , "star")
+# end if
+
+if not os.path.exists(starDirTmp):
+#    print("DEBUG: Creating a temporary dir for star: [%s]" % starDirTmp)
+    if os.mkdir(starDirTmp):
+        print("ERROR: Failed to create a temporary dir for cing at: " + starDirTmp)
+        sys.exit(1)
+#print 'DEBUG: using starDirTmp: ' + starDirTmp
