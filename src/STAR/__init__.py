@@ -1,5 +1,6 @@
 import os
 import sys
+
 __author__    = "$Author$"
 ___revision__ = "$Revision$"
 ___date__     = "$Date$"

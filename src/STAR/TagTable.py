@@ -46,18 +46,19 @@ class TagTable (Lister):
         
         self.tagnames = tagnames
         if self.tagnames == None:
-          self.tagnames  = [ '_Dummy_tag' ]
+            self.tagnames  = [ '_Dummy_tag' ]
           
         self.tagvalues = tagvalues
         if self.tagvalues == None:
-          self.tagvalues  = [ [None] ]
+            self.tagvalues  = [ [None] ]
           
         self.verbosity  = verbosity
     
-    "Returns the STAR text representation"
+    
     def star_text ( self,
                     flavor                  = 'NMR-STAR'
                    ):
+        "Returns the STAR text representation"
         ## Info herein can be transferred to a STAR reference file too
         if flavor == None or flavor == 'NMR-STAR':
             # Number of spaces before the loop_ tag. 0 in CIF
@@ -152,11 +153,11 @@ class TagTable (Lister):
         
         return str
     
-    """
-    A title identifing a tagtable by its tagnames
-    simply the space separated concatenation of the tag names
-    """
     def set_title ( self ):
+        """
+        A title identifing a tagtable by its tagnames
+        simply the space separated concatenation of the tag names
+        """
         if self.verbosity >= 9:
             print 'Setting title of tagtable'
         self.title = string.join( self.tagnames )
@@ -458,17 +459,17 @@ class TagTable (Lister):
                   % ( col_length, tag_id )
             print "Tag names of this table are:"
             print self.tagnames            
-            for xxx in range(0,len(self.tagvalues[0])):             
-                for yyy in range(0,len(self.tagvalues)):
-                    print self.tagvalues[yyy][xxx],              
+            for xVar in range(0,len(self.tagvalues[0])):             
+                for yVar in range(0,len(self.tagvalues)):
+                    print self.tagvalues[yVar][xVar],              
                 print '\n-----------------------------------------------'              
             pos = 0
             while pos < tag_id:
-                 print self.tagvalues[pos][-1]
-                 pos = pos + 1            
+                print self.tagvalues[pos][-1]
+                pos = pos + 1            
             return 1
 
-        if col_length == 0:
+        if col_length == 0: 
             print "ERROR: no tag values parsed"
             return 1
 

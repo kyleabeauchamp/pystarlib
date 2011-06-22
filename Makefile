@@ -8,5 +8,6 @@ nose:
 #	nosetests --testmatch=test_.+.py
 	coverage xml
 
-#pylint:
-#	pylint --max-line-length=120 --disable="E0602,W0511" -f parseable --include-ids=y divergence > pylint.txt || exit 0
+pylint:
+#	pylint --max-line-length=120 --disable="E0602,W0511" -f parseable --include-ids=y STAR > pylint.txt || exit 0
+	cd src; pylint --rcfile .pylibrc STAR > pylint.txt || exit 0
