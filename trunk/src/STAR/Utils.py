@@ -5,10 +5,6 @@ import os
 import re
 import shutil
 
-__author__    = "$Author$"
-___revision__ = "$Revision$"
-___date__     = "$Date$"
-
 """
 $Log$
 Revision 1.2  2007/01/23 18:08:11  jurgenfd

@@ -19,12 +19,6 @@ import os
 import re
 #import profile
 
-__author__    = "$Author$" 
-___revision__ = "$Revision$"
-___date__     = "$Date$"
-
-
-
 """
 STAR file
 Only methods for reading and writing are currently implemented.

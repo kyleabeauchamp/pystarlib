@@ -2,14 +2,7 @@
 Classes for dealing with STAR syntax
 """
 
-__author__    = "$Author$"
-___revision__ = "$Revision$"
-___date__     = "$Date$"
-
-## Standard modules
 import string, re
-
-## BMRB modules
 import STAR # Actually the current package
 
 """
