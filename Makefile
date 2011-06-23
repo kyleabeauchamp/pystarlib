@@ -11,3 +11,7 @@ nose:
 pylint:
 #	pylint --max-line-length=120 --disable="E0602,W0511" -f parseable --include-ids=y STAR > pylint.txt || exit 0
 	cd src; pylint --rcfile .pylibrc STAR > pylint.txt || exit 0
+	
+sloccount:
+	sloccount --duplicates --details --addlangall src > sloccount.sc
+		

@@ -1,10 +1,6 @@
 import os
 import sys
 
-__author__    = "$Author$"
-___revision__ = "$Revision$"
-___date__     = "$Date$"
-
 """
 Goal of these routines are to provide a Python interface to writing, reading,
 analyzing, and modifying NMR-STAR and mmCIF files and objects.
@@ -87,7 +83,7 @@ starDirTmp             = os.path.join("/tmp", "star")
 # The TMPDIR environment variable will override the default above but not the one that
 # might be defined in localConstants.py.
 try:
-    from localConstants import starDirTmp #@UnresolvedImport
+    from localConstants import starDirTmp  #@UnresolvedImport
 except:
     if os.environ.has_key("TMPDIR"):
         starDirTmp = os.path.join(os.environ["TMPDIR"], "star")
