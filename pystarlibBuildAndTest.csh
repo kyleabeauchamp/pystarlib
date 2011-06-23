@@ -18,5 +18,6 @@ echo "DEBUG: PYTHONPATH 2  : $PYTHONPATH"
 
 make -j nose
 make -j pylint
+make -j sloccount
 
 echo "Done"
