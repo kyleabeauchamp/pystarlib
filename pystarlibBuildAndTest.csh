@@ -16,8 +16,9 @@ echo "DEBUG: PYTHONPATH 2  : $PYTHONPATH"
 # Comment out the next line after done testing for it's a security issue.
 #setenv | sort
 
-make -j nose
-make -j pylint
-make -j sloccount
+make clean
+make nose
+make pylint
+make sloccount
 
 echo "Done"
