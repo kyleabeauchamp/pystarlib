@@ -1,9 +1,8 @@
-'''
-Created on Jun 24, 2011
-
-@author: jd
-'''
-
+#@PydevCodeAnalysisIgnore 
+# pylint: disable=C0111 
+# Above will cause pylint to ignore the lack of documentation here.
+# Notee that for pydev code analysis the whole file can get ignored.
+ 
 print 'Before imports'
 
 from warnings import warn

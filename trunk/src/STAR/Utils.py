@@ -1,6 +1,7 @@
 """
 Just a few utilities that can be of more general use.
 """
+from nose.plugins.skip import SkipTest
 import os
 import re
 import shutil
@@ -41,6 +42,12 @@ class Lister:
             else:
                 result = result + "\tname %s=%s\n" % (attr, self.__dict__[attr])
         return result        
+
+class MySkipTest(SkipTest):
+    '''
+    Subclassing so this dependency only occurs in one place of the code corpus.
+    '''
+# end class
 
 
 """

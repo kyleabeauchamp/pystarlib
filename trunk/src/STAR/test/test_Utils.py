@@ -5,6 +5,7 @@ import unittest
 
 
 class AllChecks(TestCase, Lister):
+    """Test case"""
     def test_afew(self):
         """STAR Utils"""
         m1 = [ [1, 2], [3, 4] ]

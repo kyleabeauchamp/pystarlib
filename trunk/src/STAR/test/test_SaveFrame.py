@@ -9,6 +9,7 @@ from STAR.SaveFrame import SaveFrame
 
 
 class AllChecks(TestCase):
+    """Test case"""
     sf = SaveFrame()
     tT = TagTable()
     tT.tagnames=['_File_characteristics.Sf_category']

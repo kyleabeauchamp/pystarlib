@@ -1,30 +1,21 @@
 """
 Classes for dealing with STAR syntax
 """
-from STAR import Utils
-from STAR.Utils import Lister
-from STAR.TagTable import TagTable
-from STAR.Text import comments_strip
-from STAR.Text import semicolon_block_collapse
-from STAR.Text import nmrView_compress
-from STAR.Text import pattern_save_begin
-from STAR.Text import pattern_save_end
-from STAR.Text import pattern_tagtable_loop
-from STAR.Text import pattern_save_begin_nws
-from STAR.Text import pattern_save_end_nws
-from STAR.Text import pattern_tag_name_nws
-from STAR.Text import pattern_tagtable_loop_nws
-from STAR.SaveFrame import SaveFrame
-import os
-import re
-#import profile
 
-"""
-STAR file
-Only methods for reading and writing are currently implemented.
-datanodes is a list of possibly mixed saveframes and tagtables
-"""
+from STAR import Utils
+from STAR.SaveFrame import SaveFrame
+from STAR.TagTable import TagTable
+from STAR.Text import * #@UnusedWildImport
+from STAR.Utils import Lister
+import os
+
+
 class File (Lister):
+    """
+    STAR file
+    Only methods for reading and writing are currently implemented.
+    datanodes is a list of possibly mixed saveframes and tagtables
+    """
     def __init__(self, 
                     title                   = 'general_star_file_title', 
                     filename                = '', 
@@ -37,15 +28,15 @@ class File (Lister):
         self.filename   = filename
         
         if datanodes:
-          self.datanodes  = datanodes
+            self.datanodes  = datanodes
         else:
-          self.datanodes = []
+            self.datanodes = []
           
         self.flavor     = flavor
         self.verbosity  = verbosity
         
-    "Simple checks on integrity"
     def check_integrity(self, recursive = 1):
+        "Simple checks on integrity"
         if recursive:
             for datanode in self.datanodes:
                 if datanode.check_integrity(recursive = 1):
@@ -55,26 +46,22 @@ class File (Lister):
             print 'Checked integrity of File    (%2s datanodes,  recurs.=%s)  : OK [%s]' % (
                 len(self.datanodes), recursive, self.title)
 
-    "Returns the STAR text representation"
     def star_text(self, flavor = None):
+        "Returns the STAR text representation"
         if flavor == None:
             flavor = self.flavor
-        str = 'data_%s\n' % self.title
+        txt = 'data_%s\n' % self.title
         # Data node objects can be of type SaveFrame OR TagTable only
         # Data node object can now also contain comment information
         #      these comments are printed before the saveframe (Wim 2003/08/05)
         for datanode in self.datanodes:
-            str = str + datanode.comment
-            str = str + datanode.star_text(flavor = flavor)
-        return str
+            txt = txt + datanode.comment
+            txt = txt + datanode.star_text(flavor = flavor)
+        return txt
 
-
-    """
-    Reads a NMR-STAR formatted file using
-    the filename attribute.
-    """
     def read (self, nmrView_type = 0):
-
+        "Reads a NMR-STAR formatted file using the filename attribute."
+        
         if not self.filename:
             print 'ERROR: no filename in STARFile with title:', self.title
             return 1
@@ -87,20 +74,21 @@ class File (Lister):
         return 0
 
     
-    """
-    - Parses text into save frames and tagtables.
-    - Input text should start at position given with non-white space character
-    - Appends a list of datanodes(save frames or tagtables)
-    """
     def parse (self, text='', nmrView_type = 0):
+        """
+        - Parses text into save frames and tagtables.
+        - Input text should start at position given with non-white space character
+        - Appends a list of datanodes(save frames or tagtables)
+
+        Return 1 for error.
+        
+        '"Begin at the beginning," the King said, gravely,
+        "and go on till you come to the end; then stop."' (LC)
+        """
 
         if self.verbosity > 2:        
             print 'DEBUG: Parsing STAR file:', self.filename
 
-        """
-        '"Begin at the beginning," the King said, gravely,
-        "and go on till you come to the end; then stop."' (LC)
-        """
 #        print "DEBUG taking care of EOL variations"
         text = Utils.dos2unix(text)# \r\n -> \n
         text = Utils.mac2unix(text)# \r   -> \n
@@ -183,10 +171,10 @@ class File (Lister):
                     return None
                 match_save_begin = pattern_save_begin.search(text, pos)
                 if not match_save_begin:
-                    print "ERROR: Code error (no second match on sf begin)";
+                    print "ERROR: Code error (no second match on sf begin)"
                     return None
                 if match_save_begin.start() != pos:
-                    print "ERROR: Code error (wrong second match on sf begin)";
+                    print "ERROR: Code error (wrong second match on sf begin)"
                     return None
                 self.datanodes.append(SaveFrame(tagtables    = [])) # Need resetting ?
                 self.datanodes[-1].title = match_save_begin.group(1)
@@ -203,10 +191,10 @@ class File (Lister):
                     return None
                 match_save_end = pattern_save_end.search(text, pos)
                 if not match_save_end:
-                    print "ERROR: Code error (no second match on sf end)";
+                    print "ERROR: Code error (no second match on sf end)"
                     return None
                 if match_save_end.start() != pos:
-                    print "ERROR: Code error (wrong second match on sf end)";
+                    print "ERROR: Code error (wrong second match on sf end)"
                     return None
                 sf_open     = None
                 next_sf_end = None
@@ -263,67 +251,29 @@ class File (Lister):
         # Save some memory
         text = ''
         return 0
+    # end def
 
-
-
-    """
-    Writes the object to a STAR formatted file using
-    the filename attribute.
-    """
     def write (self):
+        """
+        Writes the object to a STAR formatted fileObject using
+        the filename attribute.
+        """
         if not self.filename:
             print 'ERROR: no filename in STARFile with title:', self.title
             return 1
-        f = open(self.filename, 'w')
-        f.write(self.star_text())
-        f.close()
+        fileObject = open(self.filename, 'w')
+        fileObject.write(self.star_text())
+        fileObject.close()
         if self.verbosity > 2:
-            print 'DEBUG: Written STAR file:', self.filename
+            print 'DEBUG: Written STAR fileObject:', self.filename
+        # end if
+    # end def
 
-    """
-    Reads only the top part of a file up to but excluding the line
-    on which any given regexp matches.
-    Returns None on success.
-    """
-    def getHeader( self, matchStrList, inputFN, outputFN ):
-        matchList = []
-        for str in matchStrList:
-            m = re.compile(str)
-            if m is None:
-                print "ERROR: failed to compile pattern: ", str
-                return 1
-#            print "Appended: ", str
-            matchList.append( m )
-        
-        input  = open(inputFN,  'r')
-        output = open(outputFN, 'w')
-        L =[]
-        line = input.readline()
-        found = False
-        while line:
-            for m in matchList:
-#                print "DEBUG: looking at line: ", line, " with ", m
-                if m.search(line) != None:
-                    found = True
-                    break
-            if found:
-                break
-            L.append(line)
-            line = input.readline()
-
-#        print "DEBUG: writing number of lines: ", len(L)
-        output.writelines(L)                    
-        output.close()
-        if not os.path.exists(outputFN):
-            print "WARNING: failed to materialize file: " + outputFN
-            return 1
-        return None
-
-    """
-    Returns sfs that match the category, None for error and empty list
-    for no matches.
-    """
     def getSaveFrames(self, category = None):
+        """
+        Returns sfs that match the category, None for error and empty list
+        for no matches.
+        """
         if not category:
             return None
         result = []
@@ -332,18 +282,16 @@ class File (Lister):
                 if node.getSaveFrameCategory()==category:
                     result.append(node)
         return result
-
-
-        
-    """
-    Tries to reformat a file on disk with the filename given in the
-    attribute of this object.
-    Running Steve Madings (BMRB) formatNMRSTAR program if available    
-    NOTE: this does NOT do anything with the datanodes of this object!
-    """
+    
     def formatNMRSTAR(self, 
 #                    comment_file_str_dir    = '/bmrb/lib', 
                     ):
+        """
+        Tries to reformat a file on disk with the filename given in the
+        attribute of this object.
+        Running Steve Madings (BMRB) formatNMRSTAR program if available    
+        NOTE: this does NOT do anything with the datanodes of this object!
+        """
 
         if self.verbosity >= 9:
             print "Attempting to reformat STAR file using external program if available"
@@ -381,3 +329,47 @@ class File (Lister):
             if self.verbosity :
                 print "WARNING: Not pretty printing STAR file", self.filename
             return 1
+        # end if
+    # end def
+# end class
+
+
+def getHeader( matchStrList, inputFN, outputFN ):
+    """
+    Reads only the top part of a file up to but excluding the line
+    on which any given regexp matches.
+    Returns None on success.
+    """
+    matchList = []
+    for txt in matchStrList:
+        pattern = re.compile(txt)
+        if pattern is None:
+            print "ERROR: failed to compile pattern: ", txt
+            return 1
+#            print "Appended: ", txt
+        matchList.append( pattern )
+            
+    inputFile  = open(inputFN,  'r')
+    outputFile = open(outputFN, 'w')
+    listOfLines = []
+    line = inputFile.readline()
+    found = False
+    while line:
+        for pattern in matchList:
+#                print "DEBUG: looking at line: ", line, " with ", pattern
+            if pattern.search(line) != None:
+                found = True
+                break
+        if found:
+            break
+        listOfLines.append(line)
+        line = inputFile.readline()
+
+#        print "DEBUG: writing number of lines: ", len(listOfLines)
+    outputFile.writelines(listOfLines)                    
+    outputFile.close()
+    if not os.path.exists(outputFN):
+        print "WARNING: failed to materialize file: " + outputFN
+        return 1
+    return None
+# end def

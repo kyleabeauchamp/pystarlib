@@ -1,8 +1,8 @@
 """
 Classes for dealing with STAR syntax
 """
-from STAR.Utils import Lister
 
+from STAR.Utils import Lister
 
 class SaveFrame (Lister):
     """
