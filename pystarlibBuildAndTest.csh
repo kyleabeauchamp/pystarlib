@@ -17,8 +17,8 @@ echo "DEBUG: PYTHONPATH 2  : $PYTHONPATH"
 #setenv | sort
 
 make clean
-make nose
-make pylint
 make sloccount
+make pylint
+make nose
 
 echo "Done"

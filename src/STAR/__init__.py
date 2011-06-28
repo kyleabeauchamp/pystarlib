@@ -1,6 +1,3 @@
-import os
-import sys
-
 """
 Goal of these routines are to provide a Python interface to writing, reading,
 analyzing, and modifying NMR-STAR and mmCIF files and objects.
@@ -75,15 +72,18 @@ J. Westbrook and P. E. Bourne. STAR/mmCIF: An ontologoy for macromolecular struc
     Bioinformatics. 16 (2):159-168, 2000.
 """
 
+import os
+import sys
+ 
 ## Public attributes
 verbosity               = 2
 starDirTmp             = os.path.join("/tmp", "star")
-
+        
 
 # The TMPDIR environment variable will override the default above but not the one that
 # might be defined in localConstants.py.
-try:
-    from localConstants import starDirTmp  #@UnresolvedImport
+try:  
+    from localConstants import starDirTmp  #@UnresolvedImport #IGNORE:F0401
 except:
     if os.environ.has_key("TMPDIR"):
         starDirTmp = os.path.join(os.environ["TMPDIR"], "star")
@@ -93,5 +93,5 @@ if not os.path.exists(starDirTmp):
 #    print("DEBUG: Creating a temporary dir for star: [%s]" % starDirTmp)
     if os.mkdir(starDirTmp):
         print("ERROR: Failed to create a temporary dir for cing at: " + starDirTmp)
-        sys.exit(1)
+        sys.exit(1) 
 #print 'DEBUG: using starDirTmp: ' + starDirTmp

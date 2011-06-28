@@ -1,4 +1,6 @@
-"""Unit test
+"""
+Unit test execute as:
+python $PYSTARLIB_ROOT/src/STAR/test/test_File.py
 """
 from STAR import Utils
 from STAR import starDirTmp
@@ -20,6 +22,7 @@ os.chdir(starDirTmpTest)
 
 
 class AllChecks(TestCase):
+        """Test case"""
         strf           = File(verbosity=2)        
         
         def testparse(self):

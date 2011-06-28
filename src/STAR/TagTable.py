@@ -1,6 +1,7 @@
 """
 Classes for dealing with STAR syntax
 """
+
 from STAR.Text import pattern_quotes_needed
 from STAR.Text import quotes_add
 from STAR.Text import pattern_quotes_needed_2
@@ -20,16 +21,9 @@ import string
 import types
 import re
 
-
-"""
-Looped and free tags can not be mixed in same object.
-"""
 class TagTable (Lister):
     """
-    In initializing the class a content has to be given!!!
-    If not then the class will make something up and it won't
-    be pretty but it will be following legal syntax. Usual
-    case is to call the parse method with some text and position.
+    Looped and free tags can not be mixed in same object.
     """
     def __init__( self,
                   free      = None,
@@ -38,6 +32,12 @@ class TagTable (Lister):
                   tagvalues =  None,
                   verbosity = 2
                   ):
+        """
+        In initializing the class a content has to be given!!!
+        If not then the class will make something up and it won't
+        be pretty but it will be following legal syntax. Usual
+        case is to call the parse method with some text and position.
+        """
         self.free       = free
         self.title      = title
         
@@ -161,14 +161,13 @@ class TagTable (Lister):
         if self.verbosity >= 9:
             print 'Setting title of tagtable'
         self.title = string.join( self.tagnames )
-
-                
-    """
-    Size and type checks to be extended
-    0 Only fast checks
-    9 Type checks of each element
-    """
+           
     def check_integrity( self, check_type=0 ):                
+        """
+        Size and type checks to be extended
+        0 Only fast checks
+        9 Type checks of each element
+        """
 
         names_length    = len(self.tagnames)
         values_length   = len(self.tagvalues)
@@ -207,21 +206,21 @@ class TagTable (Lister):
         return 0
         
 
-    """
-    - Parses text into a tagtable.
-    - Returns the position in the string with the first non-white space
-    character after the tagtable or the length of the text in case all
-    was parsed. Just to be verbose, if the tagtable is ended by a save_
-    then the starting position of the save_ will be returned.
-    - Assumption here is that ;; blocks are collapsed, see Text functions
-    - For speed purposes I scan ahead to see how far I can go before
-    hitting a quoted tag value. I estimate in the large tables only 1 in
-    1000 has a ;; block and only 1 in 5-10 has '' or "" block. For the part
-    that is not quoted the parsing can be really fast.
-    """
     def parse(  self,
                 text      = '',
                 pos       = 0 ):
+        """
+        - Parses text into a tagtable.
+        - Returns the position in the string with the first non-white space
+        character after the tagtable or the length of the text in case all
+        was parsed. Just to be verbose, if the tagtable is ended by a save_
+        then the starting position of the save_ will be returned.
+        - Assumption here is that ;; blocks are collapsed, see Text functions
+        - For speed purposes I scan ahead to see how far I can go before
+        hitting a quoted tag value. I estimate in the large tables only 1 in
+        1000 has a ;; block and only 1 in 5-10 has '' or "" block. For the part
+        that is not quoted the parsing can be really fast.
+        """
         ## Parse free tagtable reading all tag name/value pairs
         if self.free:
             pos = self._tagtable_free_parse( text, pos )
@@ -319,11 +318,11 @@ class TagTable (Lister):
         return pos
 
 
-    """
-    Parse names and values of free tagtable loop from pos
-    returns new position alias status (None for failure)
-    """
     def _tagtable_free_parse( self, text, pos ):
+        """
+        Parse names and values of free tagtable loop from pos
+        returns new position alias status (None for failure)
+        """
         
         text_length = len(text)
 
@@ -355,11 +354,11 @@ class TagTable (Lister):
         return pos
 
 
-    """
-    Parse values of tagtable loop from pos to pos_end
-    returns status (None for success, 1 for failure)
-    """
     def _tagtable_loop_values_parse( self, text, pos, pos_end):
+        """
+        Parse values of tagtable loop from pos to pos_end
+        returns status (None for success, 1 for failure)
+        """
         
         if self.free:
             print "ERROR: This is a 'free' tagtable, only looped tagtable can be parsed"

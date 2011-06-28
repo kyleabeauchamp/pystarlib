@@ -1,11 +1,17 @@
+"""
+Unit test execute as:
+python $PYSTARLIB_ROOT/src/STAR/test/test_Text.py
+"""
+
 from unittest import TestCase
 from STAR.Text import comments_strip
 import unittest
 
 
 class AllChecks(TestCase):
-    def test(self):
-        """Text"""
+    """Test case"""
+    def test_Text(self):
+        """Test Text"""
 #        textExpectedAfterCollapse = ';<eol-string>mmy xie<eol-string>;\n_Test'
 #        text = """;
 #mmy xie
@@ -28,7 +34,7 @@ class AllChecks(TestCase):
 """
         self.assertEqual(t2noComment, comments_strip( t2 ))
 
-    def testcomments_strip(self):
+    def test_comments_strip(self):
         """comments_strip"""
         text = """
 # my comment exactly
@@ -49,7 +55,7 @@ bar
         textNew = comments_strip( text )
         self.assertEqual( textNew, textExpected)
     
-    def testcomments_strip2(self):
+    def test_comments_strip2(self):
         """comments_strip 2"""
         text = """
 H' # comment
@@ -62,7 +68,7 @@ H"
         textNew = comments_strip( text )
         self.assertEqual( textNew, textExpected)
 
-    def testcomments_strip3a(self):
+    def test_comments_strip3a(self):
         """comments_strip 3a"""
         text = """
 H# # comment
@@ -74,7 +80,7 @@ H#
         textNew = comments_strip( text )
         self.assertEqual( textNew, textExpected)
 
-    def testcomments_strip3(self):
+    def test_comments_strip3(self):
         """comments_strip 3"""
         text = """
 H# 
@@ -86,7 +92,7 @@ H#
         textNew = comments_strip( text )
         self.assertEqual( textNew, textExpected)
 
-    def testcomments_strip4(self):
+    def test_comments_strip4(self):
         """comments_strip 4"""
         text = """
 ;
@@ -107,7 +113,7 @@ test2 # no comment 2
         textNew = comments_strip( text )
         self.assertEqual( textNew, textExpected)
 
-    def testcomments_strip5(self):
+    def test_comments_strip5(self):
         """comments_strip 5"""
         text = """
 'quoted value with embedded # comment' # real comment
@@ -118,7 +124,7 @@ test2 # no comment 2
         textNew = comments_strip( text )
         self.assertEqual( textNew, textExpected)
 
-    def testcomments_strip6(self):
+    def test_comments_strip6(self):
         """comments_strip 6"""
         text = """
 "quoted value with embedded # comment" # real comment
@@ -129,7 +135,7 @@ test2 # no comment 2
         textNew = comments_strip( text )
         self.assertEqual( textNew, textExpected)
 
-    def testcomments_strip7(self):
+    def test_comments_strip7(self):
         """comments_strip 7"""
         text = """
 "quoted 'complications ; ' with embedded # comment" # real comment
@@ -140,7 +146,7 @@ test2 # no comment 2
         textNew = comments_strip( text )
         self.assertEqual( textNew, textExpected)
 
-    def testcomments_strip8(self):
+    def test_comments_strip8(self):
         """comments_strip 8"""
         text = """
 "quoted 'complications;' with embedded # comment" # real comment
@@ -151,7 +157,7 @@ test2 # no comment 2
         textNew = comments_strip( text )
         self.assertEqual( textNew, textExpected)
     
-    def testcomments_strip9(self):
+    def test_comments_strip9(self):
         """comments_strip 9"""
         text = """
 ;

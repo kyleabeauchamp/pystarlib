@@ -1,13 +1,14 @@
 '''
-Created on Jun 24, 2011
-
-@author: jd
+Used for testing the way SkipTest Exceptions can be thrown and handled by nose.
 '''
-from nose.plugins.skip import SkipTest
+from STAR.Utils import MySkipTest
 
 try:
-    import a.b.c #@UnusedImport @UnresolvedImport
+    import a #IGNORE:W0611 #IGNORE:F0401 #@UnusedImport @UnresolvedImport 
 except:
-    raise SkipTest('bogusClass')
+    raise MySkipTest('bogusClass')
 
 bogusParameter =1
+
+
+

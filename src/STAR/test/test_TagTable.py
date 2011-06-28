@@ -1,3 +1,7 @@
+"""
+Unit test execute as:
+python $PYSTARLIB_ROOT/src/STAR/test/test_TagTable.py
+"""
 from unittest import TestCase
 from STAR.TagTable import TagTable
 import STAR
@@ -7,11 +11,13 @@ import unittest
 
 
 class AllChecks(TestCase):
-    def testcheck_integrity(self):
+    "Test case"
+    def test_check_integrity(self):
         """TagTable"""
         STAR.verbosity = 2
     ##    text = """_A a _B "b'" """; free = 1
-        text = """_A a b c d e"""; free = None
+        text = """_A a b c d e"""
+        free = None
         tt = TagTable(  free      = free,
                         tagnames  = [],
                         tagvalues = [],
