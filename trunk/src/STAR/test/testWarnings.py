@@ -1,4 +1,5 @@
 #@PydevCodeAnalysisIgnore 
+'testing the pydev and pylint code analyses'
 # pylint: disable=C0111 
 # Above will cause pylint to ignore the lack of documentation here.
 # Notee that for pydev code analysis the whole file can get ignored.

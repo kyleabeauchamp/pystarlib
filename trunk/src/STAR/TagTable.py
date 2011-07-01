@@ -73,7 +73,7 @@ class TagTable (Lister):
         tagnames_ident_size     = loop_ident_size + 3
         show_stop_tag           = 1
         
-        str         = ''
+        txt         = ''
         count       = -1
         count_hash  = 100000 # Show progress hashes while composing text for each count_hash number of values approximately
         
@@ -86,19 +86,19 @@ class TagTable (Lister):
                     tagvalue = quotes_add( self.tagvalues[i][0] )
                 else:
                     tagvalue = self.tagvalues[i][0]
-                str = str + free_ident_size * ' ' + "%s %s" % ( tagname, tagvalue )
+                txt = txt + free_ident_size * ' ' + "%s %s" % ( tagname, tagvalue )
                 if tagvalue[ -1 ] != '\n':
-                    str = str + '\n'
+                    txt = txt + '\n'
                 i = i + 1
-            return str
+            return txt
         
         ## Loop tags here
-        str = str + loop_ident_size * ' ' + 'loop_\n'
+        txt = txt + loop_ident_size * ' ' + 'loop_\n'
 
         for tagname in self.tagnames:
             ## Just format it such that it will take the least space
-            str = str + tagnames_ident_size * ' ' + '%s\n' % tagname
-        str = str + '\n'
+            txt = txt + tagnames_ident_size * ' ' + '%s\n' % tagname
+        txt = txt + '\n'
             
         col_count = len( self.tagnames )
         row_count = len( self.tagvalues[0] )
@@ -146,12 +146,12 @@ class TagTable (Lister):
         if show_stop_tag:
             str_row.append( '\n' + loop_ident_size * ' ' + 'stop_\n' )
 
-        str = str + string.join( str_row, '\n')
+        txt = txt + string.join( str_row, '\n')
 
         # Save some space
         del tagvalues_tr
         
-        return str
+        return txt
     
     def set_title ( self ):
         """
