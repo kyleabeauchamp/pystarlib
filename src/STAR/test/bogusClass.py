@@ -9,6 +9,3 @@ except:
     raise MySkipTest('bogusClass')
 
 bogusParameter =1
-
-
-

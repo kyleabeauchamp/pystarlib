@@ -1,3 +1,7 @@
+"""
+Unit test execute as:
+python $PYSTARLIB_ROOT/src/STAR/test/test_Utils.py
+"""
 from STAR.Utils import Lister
 from STAR.Utils import transpose
 from unittest import TestCase

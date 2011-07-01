@@ -22,12 +22,12 @@ os.chdir(starDirTmpTest)
 
 
 class AllChecks(TestCase):
-        """Test case"""
-        strf           = File(verbosity=2)        
-        
-        def testparse(self):
-            """STAR parse"""
-            text = """data_no_comments_here
+    """Test case"""
+    strf           = File(verbosity=2)        
+    
+    def test_parse(self):
+        """STAR parse"""
+        text = """data_no_comments_here
 
 save_comment
    _Saveframe_category  comment
@@ -49,11 +49,11 @@ save_comment
      stop_
 save_
 """
-            self.assertFalse(self.strf.parse(text=text))                                    
-            st = self.strf.star_text()
+        self.assertFalse(self.strf.parse(text=text))                                    
+        st = self.strf.star_text()
 #            print "unparsed text:[" +st+ "]"
 
-            exp = """data_no_comments_here
+        exp = """data_no_comments_here
 save_comment   _Saveframe_category  comment   loop_
         _comment
         _every_flag
@@ -68,23 +68,26 @@ save_comment   _Saveframe_category  comment   loop_
 
 ;    BOGUS_CATEGORY     stop_ save_
 """
-            self.assertTrue(Utils.equalIgnoringWhiteSpace(exp, st))
+        self.assertTrue(Utils.equalIgnoringWhiteSpace(exp, st))
 
-        def testread2(self):
-            """STAR File read"""
-            runEntry('1edp')
+    def test_read2(self):
+        """STAR File read"""
+        self.assertTrue( runEntry('1edp'))
+    # end def
+# end class
               
-"""
-Extra Test Routine going over some entries in the NMR Restraints Grid
-"""
 def runEntry(entry):
+    """
+    Extra Test Routine going over some entries in the NMR Restraints Grid
+    """
     # Put a check in for internet availability.
     print "Testing entry " + entry
     strf = File()
     # Freely available on the web so not included in package.
     stage = "2-parsed"
 #    stage = "3-converted-DOCR"
-    urlLocation = "http://www.bmrb.wisc.edu/NRG/MRGridServlet?block_text_type=%s&file_detail=%s&pdb_id=%s&program=STAR&request_type=archive&subtype=full&type=entry" % (stage, stage, entry)
+    urlLocation = "http://www.bmrb.wisc.edu/NRG/MRGridServlet?block_text_type="
+    urlLocation += "%s&file_detail=%s&pdb_id=%s&program=STAR&request_type=archive&subtype=full&type=entry" % (stage, stage, entry)
     fnamezip = entry + ".zip"
     print "DEBUG: downloading url:", urlLocation
     # TODO: wrap this in a try so the test is less invulnerable to network outages.
@@ -157,6 +160,8 @@ def runEntry(entry):
             pass
         # end try
     # end if
+    return True
+# end def
 
     
 def runAllEntries():
@@ -164,7 +169,7 @@ def runAllEntries():
 #    pdbList = ('1edp', '1q56', '1brv', '2hgh')
     pdbList = ('1edp',)
     try:
-        from Wattos.Utils import PDBEntryLists #@UnresolvedImport
+        from Wattos.Utils import PDBEntryLists #@UnresolvedImport # pylint: disable=W0404
         print "Imported Wattos.Utils; but it's not essential"
         pdbList = PDBEntryLists.getBmrbNmrGridEntries()[0:1] # Decide on the range yourself.
     except:
@@ -179,10 +184,10 @@ def runAllEntries():
     #    entry = '1hue' # 6 Mb takes 26 s to parse on 2GHz PIV CPU
     #    entry = '2ihx' # ? Mb has weird quoted values
      
-"""
-Extra Test Routine going over some entries in the NMR Restraints Grid
-"""
 def runSingleFile( filename ):
+    """
+    Extra Test Routine going over some entries in the NMR Restraints Grid
+    """
     strf = File() 
     strf.filename  = '../../Tests/data/star/%s.str' % filename   
     print "DEBUG: reading file ", strf.filename

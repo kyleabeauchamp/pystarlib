@@ -6,34 +6,15 @@ import os
 import re
 import shutil
 
-"""
-$Log$
-Revision 1.2  2007/01/23 18:08:11  jurgenfd
-The below quoted value wasn't parsed correctly.
-Occurs in the MR file for entry 2ihx.
-
-'#It has very upfield-shifted H5', H5" @ 3.935,4.012 ppm'
-
-Fixed with this update.
-
-Revision 1.1.1.1  2007/01/09 22:10:15  jurgenfd
-initial import
-
-Revision 1.1  2007/01/08 20:49:41  jurgen
-Merged improvements from Wim Vranken (EBI) back in.
-
-Revision 1.1.1.1  2001/11/02 20:16:40  jurgen
-Initial package capable of read/write access to STAR files without nested loops
-
-"""
-
-class Lister:
+#pylint: disable=R0903
+class Lister: #pylint: disable=W0232 
     """Example from 'Learning Python from O'Reilly publisher'"""
     def __repr__(self):
         return ("<Instance of %s, address %s:\n%s>" %
            (self.__class__.__name__, id(self), self.attrnames()))
 
     def attrnames(self):
+        'Return a formatted representation of the attributes'
         result=''
         keys = sorted(self.__dict__.keys())
         for attr in keys:
@@ -50,11 +31,11 @@ class MySkipTest(SkipTest):
 # end class
 
 
-"""
-A fast transposing algorithm from the python mailing list
-Used in TagTable.
-"""
 def transpose ( matrix ):
+    """
+    A fast transposing algorithm from the python mailing list
+    Used in TagTable.
+    """
     if len( matrix ) < 1:
         print 'ERROR: trying to transpose an empty matrix'
         return 1
@@ -69,11 +50,11 @@ def transpose ( matrix ):
         return apply( map, [None,] + list(matrix) )
 
 
-"""
-Collapses all whitespace to a single regular space
-before comparing. Doesn't remove final eol space.
-"""
 def equalIgnoringWhiteSpace( a, b):
+    """
+    Collapses all whitespace to a single regular space
+    before comparing. Doesn't remove final eol space.
+    """
     pattern   = re.compile("\s+" )
     a = re.sub(pattern, ' ', a)
     b = re.sub(pattern, ' ', b)
@@ -82,10 +63,13 @@ def equalIgnoringWhiteSpace( a, b):
     return a == b
 
 def dos2unix(text):
+    'Converts DOS line ends to Unix'
     return re.sub('\r\n', '\n', text)
 def unix2dos(text):
+    'Converts Unix line ends to DOS'
     return re.sub('([^\r])(\n)', '\1\r\n', text)
 def mac2unix(text):
+    'Converts Mac line ends to Unix'
     return re.sub('\r', '\n', text)
 
 # Stolen from macostools
@@ -109,8 +93,7 @@ def mkdirs(dst):
     # end try
 # end def
 
-# DELETE AN ENTIRE DIRECTORY INCLUDING ALL THE FILES
-# ==================================================
 def rmdir(path):
+    'DELETE AN ENTIRE DIRECTORY INCLUDING ALL THE FILES'
     if (os.path.exists(path)): 
         shutil.rmtree(path, 1)
